@@ -576,8 +576,7 @@
                     <li>✅ Support independent, private utility development</li>
                 </ul>
                 
-                <!-- Replace 'YOUR_ZENJOURNAL_CHECKOUT_URL' with your real checkout link when ready -->
-                <a href="https://webutility.lemonsqueezy.com/" id="buy-pro-btn" target="_blank" class="btn" style="text-decoration: none; display: block; text-align: center; font-size: 0.85rem; padding: 8px 12px;">Buy Pro License Key</a>
+                <a href="https://webutility.lemonsqueezy.com/checkout/buy/6e9fae13-f7a8-4021-ab77-cbbdf78a55fb" id="buy-pro-btn" target="_blank" class="btn" style="text-decoration: none; display: block; text-align: center; font-size: 0.85rem; padding: 8px 12px;">Buy Pro License Key</a>
             </div>
 
             <div class="form-group">
@@ -722,7 +721,7 @@
             themeSelect.value = currentTheme;
         }
 
-        // View Routing Switcher
+        // View Router Switching
         function switchView(viewName) {
             document.querySelectorAll(".workspace-view").forEach(el => el.classList.remove("active"));
             document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
@@ -1020,12 +1019,12 @@
                     licenseStatusMsg.style.color = "#10b981";
                 } else {
                     const errorMsg = data.error || (data.errors && data.errors[0] ? data.errors[0].detail : "Validation error");
-                    licenseStatusMsg.textContent = `Activation Failed: ${errorMsg}`;
+                    licenseStatusMsg.textContent = `Activation failed: ${errorMsg}`;
                     licenseStatusMsg.style.color = "#ef4444";
                 }
-            } catch (error) {
-                console.error("License network error: ", error);
-                licenseStatusMsg.textContent = "Verification server connection error.";
+            } catch (err) {
+                console.error("License key verify error: ", err);
+                licenseStatusMsg.textContent = "Unable to connect to verification server.";
                 licenseStatusMsg.style.color = "#ef4444";
             }
         }
