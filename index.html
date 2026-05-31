@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZenJournal — Local-First Workspace</title>
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- Stable Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Stable DOMPurify to prevent XSS issues -->
@@ -11,28 +15,32 @@
     <style>
         /* CSS Theme Variables */
         :root {
-            --bg-base: #121214;
-            --bg-surface: #1a1a1e;
-            --bg-element: #26262b;
-            --text-main: #e4e4e7;
+            --bg-base: #09090b;
+            --bg-surface: #121214;
+            --bg-element: #1c1c1f;
+            --bg-element-hover: #27272a;
+            --text-main: #f4f4f5;
             --text-muted: #a1a1aa;
             --accent: #6366f1;
             --accent-hover: #4f46e5;
-            --border: #2f2f37;
-            --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --border: #27272a;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
-        /* Light Theme */
+        /* Premium Light Theme */
         .theme-light {
-            --bg-base: #f4f4f5;
+            --bg-base: #f9f9fb;
             --bg-surface: #ffffff;
-            --bg-element: #e4e4e7;
-            --text-main: #18181b;
+            --bg-element: #f3f3f6;
+            --bg-element-hover: #e4e4e7;
+            --text-main: #09090b;
             --text-muted: #71717a;
             --accent: #4f46e5;
             --accent-hover: #3730a3;
             --border: #e4e4e7;
+            --shadow: 0 4px 12px rgba(9, 9, 11, 0.05);
         }
 
         /* Premium Theme: Nord */
@@ -40,23 +48,27 @@
             --bg-base: #2e3440;
             --bg-surface: #3b4252;
             --bg-element: #434c5e;
+            --bg-element-hover: #4c566a;
             --text-main: #eceff4;
             --text-muted: #d8dee9;
             --accent: #88c0d0;
             --accent-hover: #81a1c1;
             --border: #4c566a;
+            --shadow: 0 4px 12px rgba(46, 52, 64, 0.3);
         }
 
         /* Premium Theme: Solarized Dark */
         .theme-solarized {
             --bg-base: #002b36;
             --bg-surface: #073642;
-            --bg-element: #586e75;
+            --bg-element: #0a4453;
+            --bg-element-hover: #586e75;
             --text-main: #93a1a1;
             --text-muted: #586e75;
             --accent: #2aa198;
             --accent-hover: #268bd2;
-            --border: #073642;
+            --border: #0a4453;
+            --shadow: 0 4px 12px rgba(0, 43, 54, 0.4);
         }
 
         /* Premium Theme: Cyberpunk */
@@ -64,11 +76,13 @@
             --bg-base: #000b19;
             --bg-surface: #00142d;
             --bg-element: #09335a;
+            --bg-element-hover: #0c4377;
             --text-main: #00ffcc;
             --text-muted: #ff007f;
             --accent: #ff007f;
             --accent-hover: #ff3399;
             --border: #00ffcc;
+            --shadow: 0 4px 12px rgba(0, 11, 25, 0.6);
         }
 
         /* Reset & Layout */
@@ -90,7 +104,7 @@
 
         /* Sidebar Styling */
         aside {
-            width: 260px;
+            width: 250px;
             background-color: var(--bg-surface);
             border-right: 1px solid var(--border);
             display: flex;
@@ -99,9 +113,10 @@
         }
 
         .brand {
-            padding: 20px;
+            padding: 24px;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            letter-spacing: -0.02em;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -109,7 +124,7 @@
         }
 
         .nav-section {
-            padding: 15px 10px;
+            padding: 16px 12px;
             border-bottom: 1px solid var(--border);
         }
 
@@ -117,36 +132,46 @@
             width: 100%;
             background: none;
             border: none;
-            color: var(--text-main);
-            padding: 10px;
+            color: var(--text-muted);
+            padding: 10px 12px;
             text-align: left;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 5px;
-            transition: background-color 0.15s;
+            margin-bottom: 4px;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .nav-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
         }
 
         .nav-btn:hover, .nav-btn.active {
             background-color: var(--bg-element);
+            color: var(--text-main);
         }
 
         .list-container {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 15px 10px;
+            padding: 16px 12px;
         }
 
         .list-header {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: var(--text-muted);
-            margin-bottom: 10px;
-            padding-left: 10px;
+            margin-bottom: 12px;
+            padding-left: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -157,901 +182,27 @@
             border: none;
             color: var(--accent);
             cursor: pointer;
-            font-size: 1.2rem;
-            padding: 0 5px;
-            font-weight: bold;
+            padding: 0 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .add-doc-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
         }
 
         .doc-item {
             width: 100%;
             background: none;
             border: none;
-            color: var(--text-main);
-            padding: 8px 10px;
+            color: var(--text-muted);
+            padding: 8px 12px;
             text-align: left;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 0.85rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .doc-item:hover, .doc-item.active {
-            background-color: var(--bg-element);
-        }
-
-        .doc-delete-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: none;
-            font-size: 1.1rem;
-            line-height: 1;
-        }
-
-        .doc-item:hover .doc-delete-btn {
-            display: block;
-        }
-
-        .doc-delete-btn:hover {
-            color: #ef4444;
-        }
-
-        /* Main Workspace area */
-        main {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        header {
-            height: 60px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            background-color: var(--bg-surface);
-        }
-
-        .editor-container {
-            flex-grow: 1;
-            display: flex;
-            overflow: hidden;
-        }
-
-        /* View Routing Layouts */
-        .workspace-view {
-            width: 100%;
-            height: 100%;
-            display: none;
-        }
-
-        .workspace-view.active {
-            display: flex;
-        }
-
-        /* Markdown Editor layout */
-        .pane {
-            width: 50%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .pane-border {
-            border-right: 1px solid var(--border);
-        }
-
-        textarea {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: var(--bg-base);
-            color: var(--text-main);
-            font-family: var(--font-mono);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            padding: 20px;
-            resize: none;
-            outline: none;
-        }
-
-        .preview {
-            padding: 20px;
-            overflow-y: auto;
-            background-color: var(--bg-surface);
-            line-height: 1.6;
-        }
-
-        .preview h1, .preview h2, .preview h3 {
-            margin-bottom: 1rem;
-            margin-top: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 4px;
-        }
-
-        .preview p {
-            margin-bottom: 1rem;
-        }
-
-        .preview code {
-            background-color: var(--bg-element);
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: var(--font-mono);
-            font-size: 0.9em;
-        }
-
-        .preview pre {
-            background-color: var(--bg-base);
-            padding: 15px;
-            border-radius: 6px;
-            overflow-x: auto;
-            margin-bottom: 1rem;
-            border: 1px solid var(--border);
-        }
-
-        .preview pre code {
-            background-color: transparent;
-            padding: 0;
-        }
-
-        /* Planner Mode styling */
-        .planner-container {
-            max-width: 600px;
-            margin: 40px auto;
-            width: 100%;
-            padding: 0 20px;
-        }
-
-        .task-input-wrapper {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .task-input-wrapper input {
-            flex-grow: 1;
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-main);
-            padding: 10px 15px;
-            outline: none;
-        }
-
-        .btn {
-            background-color: var(--accent);
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
             font-weight: 500;
-            transition: background-color 0.15s;
-        }
-
-        .btn:hover {
-            background-color: var(--accent-hover);
-        }
-
-        .task-list {
-            list-style: none;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 15px;
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-
-        .task-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .task-checkbox {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .task-text.completed {
-            text-decoration: line-through;
-            color: var(--text-muted);
-        }
-
-        .delete-task-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
-
-        .delete-task-btn:hover {
-            color: #ef4444;
-        }
-
-        /* Modal Panel for Settings & Activation */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            width: 100%;
-            max-width: 460px;
-            padding: 24px;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1.4rem;
-            line-height: 1;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
-        .form-group select, .form-group input {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--bg-base);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-main);
-            outline: none;
-        }
-
-        .badge {
-            font-size: 0.7rem;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .badge-free {
-            background-color: var(--bg-element);
-            color: var(--text-muted);
-        }
-
-        .badge-premium {
-            background-color: #10b981;
-            color: #ffffff;
-        }
-
-        .premium-locked-notice {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- SIDEBAR -->
-    <aside>
-        <div class="brand">
-            <span>ZenJournal</span>
-            <span id="tier-badge" class="badge badge-free">Free</span>
-        </div>
-        
-        <div class="nav-section">
-            <button class="nav-btn active" id="nav-editor-btn" onclick="switchView('editor')">
-                📝 Editor Workspace
-            </button>
-            <button class="nav-btn" id="nav-planner-btn" onclick="switchView('planner')">
-                📅 Daily Checklist
-            </button>
-            <button class="nav-btn" onclick="openSettings()">
-                ⚙️ Settings
-            </button>
-        </div>
-
-        <div class="list-container" id="document-sidebar-section">
-            <div class="list-header">
-                <span>Documents</span>
-                <button class="add-doc-btn" onclick="createNewDocument()">+</button>
-            </div>
-            <div id="documents-list">
-                <!-- Dynamically populated -->
-            </div>
-        </div>
-    </aside>
-
-    <!-- MAIN INTERFACE -->
-    <main>
-        <header>
-            <h3 id="current-view-title">Document Editor</h3>
-            <div>
-                <button class="btn" style="padding: 6px 12px; font-size: 0.85rem;" onclick="exportCurrentDocument()">Export Markdown</button>
-            </div>
-        </header>
-
-        <!-- WRITING WORKSPACE -->
-        <div id="editor-workspace" class="workspace-view active">
-            <div class="pane pane-border">
-                <textarea id="editor" placeholder="Write markdown here..." oninput="onEditorInput()"></textarea>
-            </div>
-            <div class="pane preview" id="preview-pane">
-                <!-- Markdown preview output -->
-            </div>
-        </div>
-
-        <!-- PLANNER WORKSPACE -->
-        <div id="planner-workspace" class="workspace-view">
-            <div class="planner-container">
-                <div class="task-input-wrapper">
-                    <input type="text" id="new-task-input" placeholder="Add a new daily goal or task..." onkeydown="if(event.key==='Enter') addTask()">
-                    <button class="btn" onclick="addTask()">Add Task</button>
-                </div>
-                <ul class="task-list" id="task-list-element">
-                    <!-- Tasks dynamically populated -->
-                </ul>
-            </div>
-        </div>
-    </main>
-
-    <!-- SETTINGS / ACTIVATION MODAL -->
-    <div class="modal" id="settings-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="margin: 0;">Workspace Settings</h3>
-                <button class="close-modal" onclick="closeSettings()">&times;</button>
-            </div>
-            
-            <div class="form-group">
-                <label for="theme-select">Interface Theme</label>
-                <select id="theme-select" onchange="onThemeChange()">
-                    <option value="default">Default Dark</option>
-                    <option value="theme-light">Light Mode</option>
-                    <option value="theme-nord" id="opt-nord" disabled>Nord (Premium)</option>
-                    <option value="theme-solarized" id="opt-solarized" disabled>Solarized (Premium)</option>
-                    <option value="theme-cyberpunk" id="opt-cyberpunk" disabled>Cyberpunk (Premium)</option>
-                </select>
-                <div id="premium-themes-msg" class="premium-locked-notice">
-                    🔒 Premium themes require license activation.
-                </div>
-            </div>
-
-            <hr style="border: none; border-top: 1px solid var(--border); margin: 20px 0;">
-
-            <!-- MONETIZATION ZONE -->
-            <div style="background-color: var(--bg-base); border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <p style="font-weight: 700; font-size: 1rem; margin-bottom: 2px; color: var(--accent); text-align: center;">Pro Upgrade — $10.00</p>
-                <p style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-bottom: 12px;">One-time payment. Unlocks all features.</p>
-                
-                <ul style="list-style: none; padding: 0; font-size: 0.8rem; margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; padding-left: 10px;">
-                    <li>✅ <strong>Premium Themes</strong> (Nord, Solarized, Cyberpunk)</li>
-                    <li>✅ <strong>Advanced Workspace Customization</strong></li>
-                    <li>✅ Support independent, private utility development</li>
-                </ul>
-                
-                <a href="https://webutility.lemonsqueezy.com/checkout/buy/6e9fae13-f7a8-4021-ab77-cbbdf78a55fb" id="buy-pro-btn" target="_blank" class="btn" style="text-decoration: none; display: block; text-align: center; font-size: 0.85rem; padding: 8px 12px;">Buy Pro License Key</a>
-            </div>
-
-            <div class="form-group">
-                <label for="license-key-input">Enter Pro License Key</label>
-                <input type="text" id="license-key-input" placeholder="Paste your LS_... license key">
-                <button class="btn" style="width: 100%; margin-top: 10px;" onclick="activateLicenseKey()">Verify & Activate</button>
-                <div id="license-status-msg" style="font-size: 0.8rem; margin-top: 8px; color: var(--text-muted); text-align: center;">
-                    Status: No license key verified.
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Debounce helper to prevent heavy IndexedDB operations on every single keypress
-        function debounce(func, delay) {
-            let timeoutId;
-            return function (...args) {
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                }
-                timeoutId = setTimeout(() => {
-                    func.apply(this, args);
-                }, delay);
-            };
-        }
-
-        // --- DATABASE OPERATIONS (IndexedDB Module) ---
-        let db;
-        const dbName = "ZenJournalDB";
-        const dbVersion = 1;
-
-        function initDatabase() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(dbName, dbVersion);
-
-                request.onerror = (e) => reject("Database initialization error.");
-                request.onsuccess = (e) => {
-                    db = e.target.result;
-                    resolve(db);
-                };
-
-                request.onupgradeneeded = (e) => {
-                    const localDb = e.target.result;
-                    if (!localDb.objectStoreNames.contains("documents")) {
-                        localDb.createObjectStore("documents", { keyPath: "id" });
-                    }
-                    if (!localDb.objectStoreNames.contains("tasks")) {
-                        localDb.createObjectStore("tasks", { keyPath: "id" });
-                    }
-                    if (!localDb.objectStoreNames.contains("settings")) {
-                        localDb.createObjectStore("settings", { keyPath: "key" });
-                    }
-                };
-            });
-        }
-
-        // App-Level Storage Wrappers
-        function getSetting(key) {
-            return new Promise((resolve) => {
-                const tx = db.transaction("settings", "readonly");
-                const store = tx.objectStore("settings");
-                const req = store.get(key);
-                req.onsuccess = () => resolve(req.result ? req.result.value : null);
-                req.onerror = () => resolve(null);
-            });
-        }
-
-        function setSetting(key, value) {
-            return new Promise((resolve) => {
-                const tx = db.transaction("settings", "readwrite");
-                const store = tx.objectStore("settings");
-                store.put({ key, value });
-                tx.oncomplete = () => resolve();
-            });
-        }
-
-        function writeDocument(doc) {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction("documents", "readwrite");
-                const store = tx.objectStore("documents");
-                const req = store.put(doc);
-                req.onsuccess = () => resolve();
-                req.onerror = () => reject(req.error);
-            });
-        }
-
-        // --- GLOBAL APP STATE ---
-        let currentDocumentId = null;
-        let isPremium = false;
-        let currentTheme = "default";
-
-        // DOM elements
-        const editor = document.getElementById("editor");
-        const previewPane = document.getElementById("preview-pane");
-        const documentsListElement = document.getElementById("documents-list");
-        const taskListElement = document.getElementById("task-list-element");
-        const themeSelect = document.getElementById("theme-select");
-        const licenseInput = document.getElementById("license-key-input");
-        const licenseStatusMsg = document.getElementById("license-status-msg");
-        const tierBadge = document.getElementById("tier-badge");
-
-        // Initialization Pipeline
-        window.addEventListener("DOMContentLoaded", async () => {
-            try {
-                await initDatabase();
-                await loadAppSettings();
-                
-                // Fetch existing docs
-                const docs = await getAllDocuments();
-                if (docs.length === 0) {
-                    // Seed initial welcome note sequential operation
-                    const welcomeId = "doc_" + Date.now();
-                    const welcomeDoc = {
-                        id: welcomeId,
-                        title: "Welcome Note",
-                        content: "# Welcome to ZenJournal\n\nThis is a private, client-side, offline-first Markdown Editor and Planner.\n\n### Core Strengths:\n* **Zero Server Latency:** Everything is stored locally in your browser's IndexedDB.\n* **100% Private:** Your thoughts never leave your local environment.\n* **Built-in Task Board:** Keep goals right alongside your notes.",
-                        updatedAt: Date.now()
-                    };
-                    await writeDocument(welcomeDoc);
-                    await syncDocumentSidebar();
-                    await selectDocument(welcomeId);
-                } else {
-                    await syncDocumentSidebar();
-                    // Load the first available document
-                    await selectDocument(docs[0].id);
-                }
-                
-                await loadTasks();
-            } catch (err) {
-                console.error("Initialization error:", err);
-            }
-        });
-
-        // App settings loading
-        async function loadAppSettings() {
-            isPremium = (await getSetting("isPremium")) === "true";
-            updateLicenseUI();
-
-            currentTheme = await getSetting("theme") || "default";
-            applyTheme(currentTheme);
-            themeSelect.value = currentTheme;
-        }
-
-        // View Router Switching
-        function switchView(viewName) {
-            document.querySelectorAll(".workspace-view").forEach(el => el.classList.remove("active"));
-            document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
-            
-            const docSection = document.getElementById("document-sidebar-section");
-            const headerTitle = document.getElementById("current-view-title");
-
-            if (viewName === "editor") {
-                document.getElementById("editor-workspace").classList.add("active");
-                document.getElementById("nav-editor-btn").classList.add("active");
-                docSection.style.display = "block";
-                headerTitle.textContent = "Document Editor";
-            } else if (viewName === "planner") {
-                document.getElementById("planner-workspace").classList.add("active");
-                document.getElementById("nav-planner-btn").classList.add("active");
-                docSection.style.display = "none";
-                headerTitle.textContent = "Daily Checklist";
-            }
-        }
-
-        // --- MARKDOWN OPERATIONS ---
-        function getAllDocuments() {
-            return new Promise((resolve) => {
-                const tx = db.transaction("documents", "readonly");
-                const store = tx.objectStore("documents");
-                const req = store.getAll();
-                req.onsuccess = () => resolve(req.result || []);
-            });
-        }
-
-        async function syncDocumentSidebar() {
-            const docs = await getAllDocuments();
-            documentsListElement.innerHTML = "";
-            
-            // Sort by modified date descending
-            docs.sort((a, b) => b.updatedAt - a.updatedAt);
-
-            docs.forEach(doc => {
-                const div = document.createElement("div");
-                div.className = `doc-item ${doc.id === currentDocumentId ? "active" : ""}`;
-                div.onclick = () => selectDocument(doc.id);
-                
-                const span = document.createElement("span");
-                span.textContent = doc.title || "Untitled Note";
-                span.style.overflow = "hidden";
-                span.style.textOverflow = "ellipsis";
-                span.style.whiteSpace = "nowrap";
-                
-                const deleteBtn = document.createElement("button");
-                deleteBtn.className = "doc-delete-btn";
-                deleteBtn.innerHTML = "&times;";
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    deleteDocument(doc.id);
-                };
-
-                div.appendChild(span);
-                div.appendChild(deleteBtn);
-                documentsListElement.appendChild(div);
-            });
-        }
-
-        async function createNewDocument() {
-            const id = "doc_" + Date.now();
-            const newDoc = {
-                id,
-                title: "Untitled Note",
-                content: "# Untitled Note\n\nStart writing...",
-                updatedAt: Date.now()
-            };
-            
-            await writeDocument(newDoc);
-            await syncDocumentSidebar();
-            await selectDocument(id);
-        }
-
-        function selectDocument(id) {
-            currentDocumentId = id;
-            return new Promise((resolve) => {
-                const tx = db.transaction("documents", "readonly");
-                const store = tx.objectStore("documents");
-                const req = store.get(id);
-                req.onsuccess = () => {
-                    const doc = req.result;
-                    if (doc) {
-                        editor.value = doc.content;
-                        renderMarkdown(doc.content);
-                        
-                        // Set Sidebar Highlight status
-                        document.querySelectorAll(".doc-item").forEach(el => el.classList.remove("active"));
-                        const activeItem = Array.from(documentsListElement.children).find(el => el.onclick.toString().includes(id));
-                        if (activeItem) activeItem.classList.add("active");
-                    }
-                    resolve();
-                };
-            });
-        }
-
-        function deleteDocument(id) {
-            if (!confirm("Are you sure you want to delete this document?")) return;
-            
-            const tx = db.transaction("documents", "readwrite");
-            tx.objectStore("documents").delete(id);
-            tx.oncomplete = async () => {
-                if (currentDocumentId === id) {
-                    const docs = await getAllDocuments();
-                    if (docs.length > 0) {
-                        await selectDocument(docs[0].id);
-                    } else {
-                        editor.value = "";
-                        renderMarkdown("");
-                        currentDocumentId = null;
-                    }
-                }
-                await syncDocumentSidebar();
-            };
-        }
-
-        // Debounced Input Handler to reduce DB overhead
-        const debouncedSave = debounce(async (id, content, title) => {
-            if (!id) return;
-            const updatedDoc = {
-                id,
-                title,
-                content,
-                updatedAt: Date.now()
-            };
-            await writeDocument(updatedDoc);
-            await syncDocumentSidebar();
-        }, 300);
-
-        function onEditorInput() {
-            const content = editor.value;
-            renderMarkdown(content);
-            
-            // Extract the first non-empty line as the automatic sidebar title
-            const lines = content.split("\n");
-            let title = "Untitled Note";
-            for (let line of lines) {
-                const cleanLine = line.replace(/[#*`_-]/g, "").trim();
-                if (cleanLine.length > 0) {
-                    title = cleanLine.substring(0, 30);
-                    break;
-                }
-            }
-
-            // Trigger debounced write transaction
-            debouncedSave(currentDocumentId, content, title);
-        }
-
-        function renderMarkdown(rawText) {
-            // Parses the Markdown safely via Marked + DOMPurify
-            const html = marked.parse(rawText);
-            previewPane.innerHTML = DOMPurify.sanitize(html);
-        }
-
-        // --- DAILY PLANNER ACTIONS ---
-        function loadTasks() {
-            return new Promise((resolve) => {
-                const tx = db.transaction("tasks", "readonly");
-                const store = tx.objectStore("tasks");
-                const req = store.getAll();
-                req.onsuccess = () => {
-                    const tasks = req.result || [];
-                    taskListElement.innerHTML = "";
-                    tasks.forEach(task => {
-                        const li = document.createElement("li");
-                        li.className = "task-item";
-                        li.innerHTML = `
-                            <div class="task-left">
-                                <input type="checkbox" class="task-checkbox" ${task.completed ? "checked" : ""} onchange="toggleTask('${task.id}')">
-                                <span class="task-text ${task.completed ? "completed" : ""}">${task.text}</span>
-                            </div>
-                            <button class="delete-task-btn" onclick="deleteTask('${task.id}')">&times;</button>
-                        `;
-                        taskListElement.appendChild(li);
-                    });
-                    resolve();
-                };
-            });
-        }
-
-        function addTask() {
-            const input = document.getElementById("new-task-input");
-            const text = input.value.trim();
-            if (!text) return;
-
-            const id = "task_" + Date.now();
-            const tx = db.transaction("tasks", "readwrite");
-            tx.objectStore("tasks").put({ id, text, completed: false, createdAt: Date.now() });
-            
-            tx.oncomplete = () => {
-                input.value = "";
-                loadTasks();
-            };
-        }
-
-        function toggleTask(id) {
-            const tx = db.transaction("tasks", "readwrite");
-            const store = tx.objectStore("tasks");
-            const req = store.get(id);
-            req.onsuccess = () => {
-                const task = req.result;
-                if (task) {
-                    task.completed = !task.completed;
-                    store.put(task);
-                }
-            };
-            tx.oncomplete = () => {
-                loadTasks();
-            };
-        }
-
-        function deleteTask(id) {
-            const tx = db.transaction("tasks", "readwrite");
-            tx.objectStore("tasks").delete(id);
-            tx.oncomplete = () => {
-                loadTasks();
-            };
-        }
-
-        // Markdown Exporter interface
-        function exportCurrentDocument() {
-            if (!currentDocumentId) return;
-            const content = editor.value;
-            const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "note.md";
-            link.click();
-            URL.revokeObjectURL(link.href);
-        }
-
-        // --- SETTINGS MODAL & THEME LOGIC ---
-        function openSettings() {
-            document.getElementById("settings-modal").classList.add("active");
-        }
-
-        function closeSettings() {
-            document.getElementById("settings-modal").classList.remove("active");
-        }
-
-        function applyTheme(themeName) {
-            document.body.className = "";
-            if (themeName !== "default") {
-                document.body.classList.add(themeName);
-            }
-        }
-
-        async function onThemeChange() {
-            const selected = themeSelect.value;
-            if (selected.startsWith("theme-") && selected !== "theme-light" && !isPremium) {
-                alert("Premium themes require a Pro license activation.");
-                themeSelect.value = currentTheme;
-                return;
-            }
-            currentTheme = selected;
-            applyTheme(currentTheme);
-            await setSetting("theme", currentTheme);
-        }
-
-        // Lemon Squeezy Client-Side License Activation
-        async function activateLicenseKey() {
-            const key = licenseInput.value.trim();
-            if (!key) {
-                alert("Please enter a valid license key.");
-                return;
-            }
-
-            licenseStatusMsg.textContent = "Verifying with Lemon Squeezy...";
-            licenseStatusMsg.style.color = "var(--text-muted)";
-
-            try {
-                const response = await fetch("https://api.lemonsqueezy.com/v1/licenses/activate", {
-                    method: "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    body: new URLSearchParams({
-                        "license_key": key,
-                        "instance_name": "ZenJournal Web Application"
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.activated) {
-                    isPremium = true;
-                    await setSetting("isPremium", "true");
-                    await setSetting("licenseKey", key);
-                    
-                    updateLicenseUI();
-                    licenseStatusMsg.textContent = "Successfully activated! All features unlocked.";
-                    licenseStatusMsg.style.color = "#10b981";
-                } else {
-                    const errorMsg = data.error || (data.errors && data.errors[0] ? data.errors[0].detail : "Validation error");
-                    licenseStatusMsg.textContent = `Activation failed: ${errorMsg}`;
-                    licenseStatusMsg.style.color = "#ef4444";
-                }
-            } catch (err) {
-                console.error("License key verify error: ", err);
-                licenseStatusMsg.textContent = "Unable to connect to verification server.";
-                licenseStatusMsg.style.color = "#ef4444";
-            }
-        }
-
-        function updateLicenseUI() {
-            if (isPremium) {
-                tierBadge.textContent = "Pro";
-                tierBadge.className = "badge badge-premium";
-                
-                // Enable Select Fields
-                document.getElementById("opt-nord").removeAttribute("disabled");
-                document.getElementById("opt-solarized").removeAttribute("disabled");
-                document.getElementById("opt-cyberpunk").removeAttribute("disabled");
-                document.getElementById("premium-themes-msg").style.display = "none";
-                
-                licenseStatusMsg.textContent = "Status: Pro Lifetime Activated";
-                licenseStatusMsg.style.color = "#10b981";
-            } else {
-                tierBadge.textContent = "Free";
-                tierBadge.className = "badge badge-free";
-                
-                document.getElementById("opt-nord").setAttribute("disabled", "true");
-                document.getElementById("opt-solarized").setAttribute("disabled", "true");
-                document.getElementById("opt-cyberpunk").setAttribute("disabled", "true");
-                document.getElementById("premium-themes-msg").style.display = "block";
-            }
-        }
-    </script>
-</body>
-</html>
+            overflow:
